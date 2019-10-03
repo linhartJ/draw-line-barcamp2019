@@ -9,7 +9,8 @@ object NoLine : MaybeLine()
 class Line(val start: Point, val end: Point, val color: Color) : Drawable, MaybeLine() {
 
     override fun draw(c: Canvas) {
-        c.plot(start)
+        val y = start.y
+        (start.x..end.x).forEach { x -> c.plot(Point(x, y)) }
     }
 
     private fun Canvas.plot(point: Point) {
