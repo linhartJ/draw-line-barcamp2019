@@ -49,7 +49,7 @@ internal class LineTest {
         val end = 5 to 3
 
         // when
-        Line(start, end, color).draw(canvas)
+        drawLine(start, end)
 
         // then
         val expected = listOf(
@@ -58,6 +58,10 @@ internal class LineTest {
             4 to 3,
             5 to 3
         )
+        assertPointsDrawn(expected)
+    }
+
+    private fun assertPointsDrawn(expected: List<Point>) {
         val captor = argumentCaptor<Point>()
         verify(canvas, atLeast(0)).pixel(captor.capture(), any())
         val drawn = captor.allValues
@@ -76,7 +80,11 @@ internal class LineTest {
     }
 
     private fun drawPoint(p: Point) {
-        Line(p, p, color).draw(canvas)
+        drawLine(p, p)
+    }
+
+    private fun drawLine(start: Point, end: Point) {
+        Line(start, end, color).draw(canvas)
     }
 
     private infix fun Int.to(y: Int): Point = Point(this, y)
