@@ -61,6 +61,25 @@ internal class LineTest {
         assertPointsDrawn(expected)
     }
 
+    @Test
+    fun `horizontal line reversed`() {
+        // given
+        val end = 2 to 3
+        val start = 5 to 3
+
+        // when
+        drawLine(start, end)
+
+        // then
+        val expected = listOf(
+            5 to 3,
+            4 to 3,
+            3 to 3,
+            2 to 3
+        )
+        assertPointsDrawn(expected)
+    }
+
     private fun assertPointsDrawn(expected: List<Point>) {
         val captor = argumentCaptor<Point>()
         verify(canvas, atLeast(0)).pixel(captor.capture(), any())
