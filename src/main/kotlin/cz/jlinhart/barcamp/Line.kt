@@ -8,8 +8,10 @@ object NoLine : MaybeLine()
 
 class Line(val start: Point, val end: Point, val color: Color) : Drawable, MaybeLine() {
 
-    private val xRange: IntRange
-        get() = (start.x..end.x)
+    private val xRange: IntProgression
+        get() {
+            return if (start.x < end.x) start.x..end.x else start.x downTo end.x
+        }
 
     override fun draw(c: Canvas) {
         val y = start.y
