@@ -9,6 +9,7 @@ object NoLine : MaybeLine()
 class Line(val start: Point, val end: Point, val color: Color) : Drawable, MaybeLine() {
 
     override fun draw(c: Canvas) {
+        c.pixel(start, color)
     }
 
 }
