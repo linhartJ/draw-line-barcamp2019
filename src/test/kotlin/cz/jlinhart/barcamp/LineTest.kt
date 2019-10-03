@@ -42,6 +42,28 @@ internal class LineTest {
         assertPointDrawn(p)
     }
 
+    @Test
+    fun `horizontal line`() {
+        // given
+        val start = 2 to 3
+        val end = 5 to 3
+
+        // when
+        Line(start, end, color).draw(canvas)
+
+        // then
+        val expected = listOf(
+            2 to 3,
+            3 to 3,
+            4 to 3,
+            5 to 3
+        )
+        val captor = argumentCaptor<Point>()
+        verify(canvas, atLeast(0)).pixel(captor.capture(), any())
+        val drawn = captor.allValues
+        expected.forEachIndexed { idx, p -> assertEquals(drawn[idx], p) }
+    }
+
     private fun assertPointDrawn(p: Point) {
         val captor = argumentCaptor<Point>()
         verify(canvas, atLeast(0)).pixel(captor.capture(), any())
