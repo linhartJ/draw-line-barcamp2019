@@ -9,7 +9,11 @@ object NoLine : MaybeLine()
 class Line(val start: Point, val end: Point, val color: Color) : Drawable, MaybeLine() {
 
     override fun draw(c: Canvas) {
-        c.pixel(start, color)
+        try {
+            c.pixel(start, color)
+        } catch (e: ArrayIndexOutOfBoundsException) {
+            // no problem - just drawing outside of grid
+        }
     }
 
 }
