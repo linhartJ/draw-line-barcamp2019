@@ -1,8 +1,7 @@
 package cz.jlinhart.barcamp
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.*
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
 import org.junit.jupiter.api.extension.ExtendWith
@@ -29,6 +28,21 @@ internal class LineTest {
 
         // then
         assertDoesNotThrow(action)
+    }
+
+    @Test
+    fun `line ending at its start draws single pixel`() {
+        // given
+        val p = 2 to 2
+
+        // when
+        drawPoint(p)
+
+        // then
+        val captor = argumentCaptor<Point>()
+        verify(canvas, atLeast(0)).pixel(captor.capture(), any())
+        val drawn = captor.allValues.single()
+        assertEquals(p, drawn)
     }
 
     private fun givenPointIsOutOfBounds(p: Point) {
