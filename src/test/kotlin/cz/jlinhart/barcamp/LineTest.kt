@@ -1,6 +1,7 @@
 package cz.jlinhart.barcamp
 
 import com.nhaarman.mockitokotlin2.*
+import cz.jlinhart.barcamp.LineTest.LineType.*
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertDoesNotThrow
@@ -30,68 +31,40 @@ internal class LineTest {
         assertDoesNotThrow(action)
     }
 
-    @Test
-    fun `line ending at its start draws single pixel`() {
-        // given
-        val p = 2 to 2
-
-        // when
-        drawPoint(p)
-
-        // then
-        assertPointDrawn(p)
+    enum class LineType(
+        val start: Point,
+        val end: Point,
+        val expected: List<Point>
+    ) {
+        SINGLE_PIXEL(2 to 2, 2 to 2, listOf(2 to 2)),
+        HORIZONTAL_LINE(2 to 3, 5 to 3, EXPECTED_HORIZONTAL_LINE),
+        HORIZONTAL_LINE_REVERSED(5 to 3, 2 to 3, EXPECTED_HORIZONTAL_LINE);
     }
 
-    @Test
-    fun `horizontal line`() {
+    private fun LineType.test() {
         // given
-        val start = 2 to 3
-        val end = 5 to 3
+        reset(canvas)
 
         // when
         drawLine(start, end)
 
         // then
-        val expected = listOf(
-            2 to 3,
-            3 to 3,
-            4 to 3,
-            5 to 3
-        )
         assertPointsDrawn(expected)
     }
 
     @Test
-    fun `horizontal line reversed`() {
-        // given
-        val end = 2 to 3
-        val start = 5 to 3
-
-        // when
-        drawLine(start, end)
-
-        // then
-        val expected = listOf(
-            5 to 3,
-            4 to 3,
-            3 to 3,
-            2 to 3
-        )
-        assertPointsDrawn(expected)
+    fun `all line types renders correctly`() {
+        SINGLE_PIXEL.test()
+        HORIZONTAL_LINE.test()
+        HORIZONTAL_LINE_REVERSED.test()
     }
 
     private fun assertPointsDrawn(expected: List<Point>) {
         val captor = argumentCaptor<Point>()
         verify(canvas, atLeast(0)).pixel(captor.capture(), any())
-        val drawn = captor.allValues
-        expected.forEachIndexed { idx, p -> assertEquals(drawn[idx], p) }
-    }
-
-    private fun assertPointDrawn(p: Point) {
-        val captor = argumentCaptor<Point>()
-        verify(canvas, atLeast(0)).pixel(captor.capture(), any())
-        val drawn = captor.allValues.single()
-        assertEquals(p, drawn)
+        val drawn = captor.allValues.sortedWith(PointComparator).toSimpleString()
+        val expectedString = expected.sortedWith(PointComparator).toSimpleString()
+        assertEquals(expectedString, drawn)
     }
 
     private fun givenPointIsOutOfBounds(p: Point) {
@@ -106,5 +79,17 @@ internal class LineTest {
         Line(start, end, color).draw(canvas)
     }
 
-    private infix fun Int.to(y: Int): Point = Point(this, y)
+    private fun Collection<Point>.toSimpleString(): String {
+        return joinToString { p -> "[${p.x}, ${p.y}]" }
+    }
+
 }
+
+private infix fun Int.to(y: Int): Point = Point(this, y)
+
+private val EXPECTED_HORIZONTAL_LINE = listOf(
+    2 to 3,
+    3 to 3,
+    4 to 3,
+    5 to 3
+)
