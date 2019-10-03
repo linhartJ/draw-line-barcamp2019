@@ -39,6 +39,10 @@ internal class LineTest {
         drawPoint(p)
 
         // then
+        assertPointDrawn(p)
+    }
+
+    private fun assertPointDrawn(p: Point) {
         val captor = argumentCaptor<Point>()
         verify(canvas, atLeast(0)).pixel(captor.capture(), any())
         val drawn = captor.allValues.single()
