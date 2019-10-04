@@ -8,19 +8,26 @@ object NoLine : MaybeLine()
 
 class Line(val start: Point, val end: Point, val color: Color) : Drawable, MaybeLine() {
 
-    private val xRange: IntProgression
-        get() = start.x upTo end.x
-
-    private infix fun Int.upTo(b: Int) = if (this < b) this..b else this downTo b
+    private val xRange by lazy { start.x upTo end.x }
+    private val yRange by lazy { (start.y..end.y) }
+    private val isVertical by lazy { start.x == end.x }
 
     override fun draw(c: Canvas) {
-        if (start.x == end.x) {
-            val x = start.x
-            (start.y..end.y).forEach { y -> c.plot(x, y) }
+        if (isVertical) {
+            drawAsVertical(c)
         } else {
-            val y = start.y
-            xRange.forEach { x -> c.plot(x, y) }
+            drawAsHorizontal(c)
         }
+    }
+
+    private fun drawAsHorizontal(c: Canvas) {
+        val y = start.y
+        xRange.forEach { x -> c.plot(x, y) }
+    }
+
+    private fun drawAsVertical(c: Canvas) {
+        val x = start.x
+        yRange.forEach { y -> c.plot(x, y) }
     }
 
     private fun Canvas.plot(x: Int, y: Int) {
@@ -31,4 +38,5 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
         }
     }
 
+    private infix fun Int.upTo(b: Int) = if (this < b) this..b else this downTo b
 }
