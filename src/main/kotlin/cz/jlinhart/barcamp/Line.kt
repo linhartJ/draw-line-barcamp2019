@@ -31,11 +31,8 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
 
     private data class RasterProgressions(val xProgression: Iterator<Int>, val yProgression: Iterator<Int>)
 
-    private fun rasterProgressions(): RasterProgressions {
-        val absSlope = dy / dx
-        val slope = if (start.y < end.y) absSlope else -absSlope
-        return RasterProgressions(xRange.iterator(), SlopedProgression(start.y, slope))
-    }
+    private fun rasterProgressions(): RasterProgressions =
+        RasterProgressions(xRange.iterator(), SlopedProgression(start.y, end.y, dy / dx))
 
     private fun verticalProgressions() =
         RasterProgressions(SingleValueProgression(start.x, dominantRangeSize), yRange.iterator())
@@ -43,7 +40,8 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
     private fun horizontalProgressions() = RasterProgressions(xRange.iterator(), SingleValueProgression(start.y))
     private fun diagonalProgressions() = RasterProgressions(xRange.iterator(), yRange.iterator())
 
-    inner class SlopedProgression(start: Int, val slope: Double) : Iterator<Int> {
+    inner class SlopedProgression(start: Int, end: Int, absSlope: Double) : Iterator<Int> {
+        private val slope = if (start < end) absSlope else -absSlope
         private var currentValue = start + 0.5
         override fun hasNext(): Boolean = true
 
