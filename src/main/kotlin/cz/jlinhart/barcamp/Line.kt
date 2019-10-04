@@ -2,6 +2,7 @@ package cz.jlinhart.barcamp
 
 
 import java.awt.Color
+import kotlin.math.abs
 
 sealed class MaybeLine
 object NoLine : MaybeLine()
@@ -17,12 +18,13 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
         when {
             isVertical -> drawAsVertical(c)
             isHorizontal -> drawAsHorizontal(c)
-            else -> drawAsDiagonal(c)
+            (abs(start.x - end.x) == abs(start.y - end.y)) -> drawAsDiagonal(c)
         }
     }
 
     private fun drawAsDiagonal(c: Canvas) {
-        xRange.forEach { xy -> c.plot(xy, xy) }
+        val x = xRange.iterator()
+        yRange.forEach { y -> c.plot(x.next(), y) }
     }
 
     private fun drawAsHorizontal(c: Canvas) {
