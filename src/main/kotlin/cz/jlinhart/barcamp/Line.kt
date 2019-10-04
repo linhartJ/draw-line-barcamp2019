@@ -9,7 +9,7 @@ object NoLine : MaybeLine()
 class Line(val start: Point, val end: Point, val color: Color) : Drawable, MaybeLine() {
 
     private val xRange by lazy { start.x upTo end.x }
-    private val yRange by lazy { (start.y..end.y) }
+    private val yRange by lazy { (start.y upTo end.y) }
     private val isVertical by lazy { start.x == end.x }
 
     override fun draw(c: Canvas) {
