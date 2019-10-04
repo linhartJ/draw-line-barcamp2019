@@ -84,6 +84,22 @@ internal class LineTest {
         HORIZONTAL_ISH_RIGHT_LEFT.test()
     }
 
+    @Test
+    fun `single line can be rendered multiple times`() {
+        // given
+        val l = HORIZONTAL_ISH
+        val line = Line(l.start, l.end, color)
+
+        // when
+        line.draw(canvas)
+        assertPointsDrawn(l.expected)
+        reset(canvas)
+        line.draw(canvas)
+
+        // then
+        assertPointsDrawn(l.expected)
+    }
+
     private fun assertPointsDrawn(expected: List<Point>) {
         val captor = argumentCaptor<Point>()
         verify(canvas, atLeast(0)).pixel(captor.capture(), any())
