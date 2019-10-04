@@ -12,13 +12,14 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
     private val xRange by lazy { start.x upTo end.x }
     private val yRange by lazy { (start.y upTo end.y) }
     private val isVertical by lazy { start.x == end.x }
-    private val isHorizontal: Boolean by lazy { start.y == end.y }
+    private val isHorizontal by lazy { start.y == end.y }
+    private val isDiagonal by lazy { abs(start.x - end.x) == abs(start.y - end.y) }
 
     override fun draw(c: Canvas) {
         when {
             isVertical -> drawAsVertical(c)
             isHorizontal -> drawAsHorizontal(c)
-            (abs(start.x - end.x) == abs(start.y - end.y)) -> drawAsDiagonal(c)
+            isDiagonal -> drawAsDiagonal(c)
         }
     }
 
