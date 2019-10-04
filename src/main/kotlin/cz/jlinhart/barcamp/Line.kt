@@ -3,6 +3,7 @@ package cz.jlinhart.barcamp
 
 import java.awt.Color
 import kotlin.math.abs
+import kotlin.math.max
 
 sealed class MaybeLine
 object NoLine : MaybeLine()
@@ -13,34 +14,46 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
     private val yRange by lazy { (start.y upTo end.y) }
     private val isVertical by lazy { start.x == end.x }
     private val isHorizontal by lazy { start.y == end.y }
-    private val isDiagonal by lazy { abs(start.x - end.x) == abs(start.y - end.y) }
+    private val dy by lazy { abs(start.y - end.y).toDouble() }
+    private val dx by lazy { abs(start.x - end.x).toDouble() }
+    private val isDiagonal by lazy { dx == dy }
+    private val dominantRangeSize: Int by lazy { max(dx, dy).toInt() + 1 }
 
     override fun draw(c: Canvas) {
-        when {
-            isVertical -> drawAsVertical(c)
-            isHorizontal -> drawAsHorizontal(c)
-            isDiagonal -> drawAsDiagonal(c)
-            else -> {
-                val slope = abs(start.y - end.y).toDouble() / abs(start.x - end.x).toDouble()
-                var y = start.y + 0.5
-                xRange.forEach { x -> c.plot(x, y.toInt()); y += slope }
-            }
+        val (xProgression, yProgression) = when {
+            isVertical -> verticalProgressions()
+            isHorizontal -> horizontalProgressions()
+            isDiagonal -> diagonalProgressions()
+            else -> rasterProgressions()
         }
+        xProgression.forEach { x -> c.plot(x, yProgression.next()) }
     }
 
-    private fun drawAsDiagonal(c: Canvas) {
-        val x = xRange.iterator()
-        yRange.forEach { y -> c.plot(x.next(), y) }
+    private data class RasterProgressions(val xProgression: Iterator<Int>, val yProgression: Iterator<Int>)
+
+    private fun rasterProgressions() = RasterProgressions(xRange.iterator(), SlopedProgression(start.y, dy / dx))
+
+    private fun verticalProgressions() =
+        RasterProgressions(SingleValueProgression(start.x, dominantRangeSize), yRange.iterator())
+
+    private fun horizontalProgressions() = RasterProgressions(xRange.iterator(), SingleValueProgression(start.y))
+    private fun diagonalProgressions() = RasterProgressions(xRange.iterator(), yRange.iterator())
+
+    inner class SlopedProgression(start: Int, val slope: Double) : Iterator<Int> {
+        private var currentValue = start + 0.5
+        override fun hasNext(): Boolean = true
+
+        override fun next(): Int {
+            return currentValue.toInt()
+                .also { currentValue += slope }
+        }
+
     }
 
-    private fun drawAsHorizontal(c: Canvas) {
-        val y = start.y
-        xRange.forEach { x -> c.plot(x, y) }
-    }
-
-    private fun drawAsVertical(c: Canvas) {
-        val x = start.x
-        yRange.forEach { y -> c.plot(x, y) }
+    class SingleValueProgression(val value: Int, val limit: Int = Int.MAX_VALUE) : Iterator<Int> {
+        var counter = 0
+        override fun hasNext(): Boolean = counter++ < limit
+        override fun next(): Int = value
     }
 
     private fun Canvas.plot(x: Int, y: Int) {
