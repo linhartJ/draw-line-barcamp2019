@@ -14,8 +14,13 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
     private infix fun Int.upTo(b: Int) = if (this < b) this..b else this downTo b
 
     override fun draw(c: Canvas) {
-        val y = start.y
-        xRange.forEach { x -> c.plot(x, y) }
+        if (start.x == end.x) {
+            val x = start.x
+            (start.y..end.y).forEach { y -> c.plot(x, y) }
+        } else {
+            val y = start.y
+            xRange.forEach { x -> c.plot(x, y) }
+        }
     }
 
     private fun Canvas.plot(x: Int, y: Int) {
