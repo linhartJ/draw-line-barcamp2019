@@ -15,8 +15,10 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
     override fun draw(c: Canvas) {
         if (isVertical) {
             drawAsVertical(c)
-        } else {
+        } else if (start.y == end.y) {
             drawAsHorizontal(c)
+        } else {
+            xRange.forEach { xy -> c.plot(xy, xy) }
         }
     }
 
