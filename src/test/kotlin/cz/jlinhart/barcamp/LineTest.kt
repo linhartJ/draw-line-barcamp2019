@@ -43,6 +43,7 @@ internal class LineTest {
         VERTICAL_LINE_REVERSED(1 to 3, 1 to 1, EXPECTED_VERTICAL_LINE),
         LEFT_RIGHT_DIAGONAL(1 to 1, 3 to 3, EXPECTED_LEFT_RIGHT_DIAGONAL),
         LEFT_RIGHT_DIAGONAL_REVERSED(3 to 3, 1 to 1, EXPECTED_LEFT_RIGHT_DIAGONAL),
+        RIGHT_LEFT_DIAGONAL(5 to 1, 3 to 3, EXPECTED_RIGHT_LEFT_DIAGONAL),
     }
 
     private fun LineType.test() {
@@ -65,6 +66,7 @@ internal class LineTest {
         VERTICAL_LINE_REVERSED.test()
         LEFT_RIGHT_DIAGONAL.test()
         LEFT_RIGHT_DIAGONAL_REVERSED.test()
+        RIGHT_LEFT_DIAGONAL.test()
     }
 
     private fun assertPointsDrawn(expected: List<Point>) {
@@ -111,5 +113,11 @@ private val EXPECTED_VERTICAL_LINE = listOf(
 private val EXPECTED_LEFT_RIGHT_DIAGONAL = listOf(
     1 to 1,
     2 to 2,
+    3 to 3
+)
+
+private val EXPECTED_RIGHT_LEFT_DIAGONAL = listOf(
+    5 to 1,
+    4 to 2,
     3 to 3
 )
