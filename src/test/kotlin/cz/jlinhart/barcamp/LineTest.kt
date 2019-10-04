@@ -46,10 +46,12 @@ internal class LineTest {
         RIGHT_LEFT_DIAGONAL(5 to 1, 3 to 3, EXPECTED_RIGHT_LEFT_DIAGONAL),
         RIGHT_LEFT_DIAGONAL_REVERSED(3 to 3, 5 to 1, EXPECTED_RIGHT_LEFT_DIAGONAL),
         HORIZONTAL_ISH(1 to 1, 4 to 3, EXPECTED_HORIZONTAL_ISH),
+        HORIZONTAL_ISH_REVERSED(4 to 3, 1 to 1, EXPECTED_HORIZONTAL_ISH),
     }
 
     private fun LineType.test() {
         // given
+        println("Checking $this")
         reset(canvas)
 
         // when
@@ -71,6 +73,7 @@ internal class LineTest {
         RIGHT_LEFT_DIAGONAL.test()
         RIGHT_LEFT_DIAGONAL_REVERSED.test()
         HORIZONTAL_ISH.test()
+        HORIZONTAL_ISH_REVERSED.test()
     }
 
     private fun assertPointsDrawn(expected: List<Point>) {
