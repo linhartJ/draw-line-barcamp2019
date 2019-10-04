@@ -50,6 +50,7 @@ internal class LineTest {
         VERTICAL_ISH(1 to 1, 3 to 4, EXPECTED_VERTICAL_ISH),
         VERTICAL_ISH_REVERSED(3 to 4, 1 to 1, EXPECTED_VERTICAL_ISH),
         VERTICAL_ISH_RIGHT_LEFT(3 to 1, 1 to 4, EXPECTED_VERTICAL_ISH_RIGHT_LEFT),
+        HORIZONTAL_ISH_RIGHT_LEFT(1 to 3, 4 to 1, EXPECTED_HORIZONTAL_ISH_RIGHT_LEFT);
     }
 
     private fun LineType.test() {
@@ -80,6 +81,7 @@ internal class LineTest {
         VERTICAL_ISH.test()
         VERTICAL_ISH_REVERSED.test()
         VERTICAL_ISH_RIGHT_LEFT.test()
+        HORIZONTAL_ISH_RIGHT_LEFT.test()
     }
 
     private fun assertPointsDrawn(expected: List<Point>) {
@@ -154,4 +156,12 @@ private val EXPECTED_VERTICAL_ISH_RIGHT_LEFT = listOf(
     2 to 2,
     2 to 3,
     1 to 4
+)
+
+
+private val EXPECTED_HORIZONTAL_ISH_RIGHT_LEFT = listOf(
+    1 to 3,
+    2 to 2,
+    3 to 2,
+    4 to 1
 )
