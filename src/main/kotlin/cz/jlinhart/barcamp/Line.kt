@@ -11,15 +11,18 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
     private val xRange by lazy { start.x upTo end.x }
     private val yRange by lazy { (start.y upTo end.y) }
     private val isVertical by lazy { start.x == end.x }
+    private val isHorizontal: Boolean by lazy { start.y == end.y }
 
     override fun draw(c: Canvas) {
-        if (isVertical) {
-            drawAsVertical(c)
-        } else if (start.y == end.y) {
-            drawAsHorizontal(c)
-        } else {
-            xRange.forEach { xy -> c.plot(xy, xy) }
+        when {
+            isVertical -> drawAsVertical(c)
+            isHorizontal -> drawAsHorizontal(c)
+            else -> drawAsDiagonal(c)
         }
+    }
+
+    private fun drawAsDiagonal(c: Canvas) {
+        xRange.forEach { xy -> c.plot(xy, xy) }
     }
 
     private fun drawAsHorizontal(c: Canvas) {
