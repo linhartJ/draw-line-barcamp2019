@@ -9,8 +9,10 @@ object NoLine : MaybeLine()
 
 class Line(val start: Point, val end: Point, val color: Color) : Drawable, MaybeLine() {
 
-    private val xRange by lazy { (start.x upTo end.x).iterator() }
-    private val yRange by lazy { (start.y upTo end.y).iterator() }
+    private val xRange
+        get() = (start.x upTo end.x).iterator()
+    private val yRange
+        get() = (start.y upTo end.y).iterator()
     private val isVertical by lazy { start.x == end.x }
     private val isHorizontal by lazy { start.y == end.y }
     private val dy by lazy { abs(start.y - end.y).toDouble() }
