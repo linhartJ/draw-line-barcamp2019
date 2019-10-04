@@ -31,7 +31,11 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
 
     private data class RasterProgressions(val xProgression: Iterator<Int>, val yProgression: Iterator<Int>)
 
-    private fun rasterProgressions() = RasterProgressions(xRange.iterator(), SlopedProgression(start.y, dy / dx))
+    private fun rasterProgressions(): RasterProgressions {
+        val absSlope = dy / dx
+        val slope = if (start.y < end.y) absSlope else -absSlope
+        return RasterProgressions(xRange.iterator(), SlopedProgression(start.y, slope))
+    }
 
     private fun verticalProgressions() =
         RasterProgressions(SingleValueProgression(start.x, dominantRangeSize), yRange.iterator())
