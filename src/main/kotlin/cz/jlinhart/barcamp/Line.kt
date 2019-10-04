@@ -20,6 +20,11 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
             isVertical -> drawAsVertical(c)
             isHorizontal -> drawAsHorizontal(c)
             isDiagonal -> drawAsDiagonal(c)
+            else -> {
+                val slope = abs(start.y - end.y).toDouble() / abs(start.x - end.x).toDouble()
+                var y = start.y + 0.5
+                xRange.forEach { x -> c.plot(x, y.toInt()); y += slope }
+            }
         }
     }
 
