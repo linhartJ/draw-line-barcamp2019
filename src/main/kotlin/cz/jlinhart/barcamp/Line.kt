@@ -3,7 +3,6 @@ package cz.jlinhart.barcamp
 
 import java.awt.Color
 import kotlin.math.abs
-import kotlin.math.max
 
 sealed class MaybeLine
 object NoLine : MaybeLine()
@@ -17,7 +16,7 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
     private val dy by lazy { abs(start.y - end.y).toDouble() }
     private val dx by lazy { abs(start.x - end.x).toDouble() }
     private val isDiagonal by lazy { dx == dy }
-    private val dominantRangeSize: Int by lazy { max(dx, dy).toInt() + 1 }
+    private val yRangeSize: Int by lazy { dy.toInt() + 1 }
 
     override fun draw(c: Canvas) {
         val (xProgression, yProgression) = when {
@@ -35,18 +34,17 @@ class Line(val start: Point, val end: Point, val color: Color) : Drawable, Maybe
         return if (dx > dy) {
             RasterProgressions(xRange.iterator(), SlopedProgression(start.y, end.y, dy / dx))
         } else {
-            RasterProgressions(SlopedProgression(start.x, end.x, dx / dy, dominantRangeSize), yRange.iterator())
+            RasterProgressions(SlopedProgression(start.x, end.x, dx / dy, yRangeSize), yRange.iterator())
         }
     }
 
     private fun verticalProgressions() =
-        RasterProgressions(SingleValueProgression(start.x, dominantRangeSize), yRange.iterator())
+        RasterProgressions(SingleValueProgression(start.x, yRangeSize), yRange.iterator())
 
     private fun horizontalProgressions() = RasterProgressions(xRange.iterator(), SingleValueProgression(start.y))
     private fun diagonalProgressions() = RasterProgressions(xRange.iterator(), yRange.iterator())
 
-    inner class SlopedProgression(start: Int, end: Int, absSlope: Double, val limit: Int = Int.MAX_VALUE) :
-        Iterator<Int> {
+    class SlopedProgression(start: Int, end: Int, absSlope: Double, val limit: Int = Int.MAX_VALUE) : Iterator<Int> {
         var counter = 0
         private val slope = if (start < end) absSlope else -absSlope
         private var currentValue = start + 0.5
